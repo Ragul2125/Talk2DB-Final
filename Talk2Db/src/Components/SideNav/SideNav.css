@@ -1,0 +1,140 @@
+/* Base Sidebar Styles */
+.Sidebar {
+  height: 100dvh;
+  width: 270px;
+  background-color: var(--navcolor);
+  color: #ffffff;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease-in-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200; /* Ensures it's above other elements */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+@media (max-width:1100px) {
+ 
+}
+/* Sidebar Hidden */
+.Sidebar.closed {
+  transform: translateX(-100%);
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle-btn {
+  position: fixed;
+  left: 10px;
+  top: 15px;
+  color: var(--navcolor);
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 199;
+  font-size: 1.5em;
+}
+
+/* Overlay for Mobile */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 198;
+}
+
+/* RESPONSIVE OVERLAY BEHAVIOR */
+@media screen and (max-width: 768px) {
+  .Sidebar {
+    width: 80%;
+    max-width: 270px;
+  }
+
+  .overlay {
+    display:block;
+  }
+}
+
+.sideNav-top {
+  height: 80%;
+}
+
+.sideNav-top header {
+  color: #ffffff;
+  font-size: 1.5em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sideNav-top .close,
+.sideNav-top .new-chat {
+  cursor: pointer;
+}
+
+.his {
+  height: 95%;
+  overflow: auto;
+  margin-top: 2em;
+}
+
+/* Profile Section */
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  color: black;
+  padding: 0.25em 0.5em;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.profile-img img {
+  border-radius: 50%;
+}
+
+/* History Section */
+.history {
+  padding-top: 1em;
+}
+
+.history-area {
+  padding-top: 0.5em;
+}
+
+.historys {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  width: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center !important;
+  gap: 1em;
+  padding: 0.5em 1em;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.active {
+  background-color: rgba(79, 97, 125, 0.35);
+  border-radius: 10px;
+}
+
+.row p {
+  font-size: 15px;
+}
+
+.row:hover {
+  background-color: rgba(79, 97, 125, 0.65);
+  border-radius: 10px;
+}

@@ -1,0 +1,19 @@
+.Homepg {
+  display: flex;
+  height: 100dvh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ChatArea.css */
+.ChatArea {
+  margin-left: 270px;
+  flex: 1;
+  transition: margin-left 0.3s ease;
+  width: calc(100% - 270px);
+}
+
+.ChatArea.sidebar-closed {
+  margin-left: 0;
+  width: 100%;
+}

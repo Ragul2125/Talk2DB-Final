@@ -1,0 +1,451 @@
+.chat-pg {
+  flex: 1;
+  height: 100vh;
+  background-color: var(--bgwhite);
+  /* background-color: aqua; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 11;
+  
+  /* background-color: aqua; */
+
+}
+@media (max-width:1100px) {
+  .chat-pg{
+    width: 100vw;
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
+}
+.center {
+  width: 70%;
+  /* min-height: 100dvh; */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* background-color: #333; */
+  padding: 1em 2em;
+  /* position: fixed; */
+}
+@media (max-width:1100px) {
+  .center{
+    width: 90%;
+  }
+}
+.chat-nav h1 {
+  position: sticky;
+  top: 0;
+  left: 0;
+  font-size: 33px;
+  font-weight: 800;
+  color: var(--accent);
+  span {
+    font-weight: 400;
+  }
+}
+
+/* chat input area */
+.chat-bottom {
+  width: 100%;
+  position: relative;
+  /* margin-bottom: 1em; */
+  background-color: transparent;
+  /* background-color: aquamarine; */
+}
+.chat-container {
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  bottom: 2em;
+  background-color: transparent;
+  
+}
+
+.chat-input-box {
+  display: flex;
+  align-items: center;
+  width: 90%;
+  background-color: #fff;
+  border: 1px solid rgba(0, 19, 47, 0.5);
+  border-radius: 24px;
+  padding: 10px;
+  gap: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Resizable Text Area */
+.chat-input-box textarea {
+  flex: 1;
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+  border: none;
+  outline: none;
+  resize: none;
+  line-height: 1.4;
+  box-sizing: border-box;
+  transition: height 0.1s ease-in-out;
+  overflow-y: auto;
+}
+
+.chat-send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* Buttons */
+.chat-mic-button,
+.chat-send-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+/* Breathing Animation for Recording */
+.breathing-animation {
+  animation: breathing 1s infinite alternate;
+}
+
+@keyframes breathing {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+
+/* Responsive Behavior */
+@media screen and (max-width: 600px) {
+  .chat-input-box {
+    width: 95%;
+    padding: 8px;
+  }
+
+  .chat-input-box textarea {
+    font-size: 14px;
+  }
+
+  .chat-mic-button,
+  .chat-send-button {
+    font-size: 18px;
+    padding: 3px;
+  }
+}
+
+/* chat suggestion area */
+
+.chat-welcome {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  p {
+    white-space: nowrap;
+    font-size: 45px;
+    font-weight: 700;
+    margin: 20px;
+    span {
+      color: var(--accent);
+    }
+  }
+}
+
+/* Suggestions Container */
+.suggestions-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 10px auto;
+  overflow: hidden;
+}
+
+/* Scrollable Suggestions List */
+.suggestions-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  width: 100%;
+  padding: 5px;
+}
+
+/* Hide scrollbar for better UI */
+.suggestions-list::-webkit-scrollbar {
+  display: none;
+}
+
+/* Individual Suggestion Item */
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+  padding: 10px 14px;
+  background: #f1f1f1;
+  opacity: 0.7;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  transition: background 0.2s ease-in-out;
+}
+
+.suggestion-item:hover {
+  background: #e0e0e0;
+}
+
+/* Scroll Buttons */
+.scroll-btn {
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.scroll-btn:hover {
+  background: #bbb;
+}
+
+/* ✅ RESPONSIVENESS */
+
+/* Tablets */
+@media screen and (max-width: 1024px) {
+  .suggestions-container {
+    max-width: 600px;
+  }
+
+  .suggestion-item {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  .scroll-btn {
+    font-size: 16px;
+    padding: 6px;
+  }
+  .chat-welcome {
+    p {
+      font-size: 30px;
+    }
+  }
+}
+
+/* Mobile */
+@media screen and (max-width: 768px) {
+  .chat-welcome {
+    p {
+      font-size: 20px;
+    }
+  }
+  .chat-bottom {
+    background: transparent;
+    height: 80px;
+  }
+  .chat-input {
+    border-radius: 50px;
+    height: 44px;
+    input {
+      width: 100%;
+      height: 100%;
+      font-size: 15px;
+      padding: 20px;
+      border: none;
+      outline: none;
+      background-color: transparent;
+    }
+    .chat-send-button {
+      width: 40px;
+      margin: 0 10px;
+      background-color: transparent;
+      border: none;
+      outline: none;
+    }
+  }
+  .suggestions-container {
+    max-width: 90%;
+  }
+
+  .suggestions-list {
+    gap: 8px;
+  }
+
+  .suggestion-item {
+    font-size: 12px;
+    padding: 6px 10px;
+    height: 40px;
+  }
+
+  .scroll-btn {
+    font-size: 14px;
+    padding: 5px;
+  }
+}
+
+/* Small Mobile */
+@media screen and (max-width: 480px) {
+  .chat-welcome {
+    p {
+      font-size: 15px;
+    }
+  }
+  .suggestions-container {
+    max-width: 100%;
+  }
+
+  .suggestions-list {
+    gap: 6px;
+  }
+
+  .suggestion-item {
+    font-size: 11px;
+    padding: 5px 8px;
+    height: 35px;
+  }
+
+  .scroll-btn {
+    font-size: 12px;
+    padding: 4px;
+  }
+}
+
+/* responsive */
+@media screen and (max-width: 768px) {
+  .center {
+    width: 90%;
+  }
+}
+
+/* ================== Messages Container =============== */
+.messages {
+  /* margin-top: 3em; */
+  padding: 2em;
+  height: 90%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  /* background-color: #2c7a2c; */
+ 
+}
+
+@media (max-width:800px) {
+  .messages{
+    padding: 0em;
+  }
+  .message{
+    max-width: 85%;
+  }
+}
+
+/* Wrapper to ensure messages stack properly */
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+/* Individual message styling */
+.message {
+  max-width: 85%;
+  word-wrap: break-word;
+  padding: 0.7em 1.2em;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  border-radius: 20px;
+  font-size: 15px;
+  display: inline-block;
+  line-height: 1.4;
+}
+
+/* User message on the right */
+.user-message {
+  background-color: rgba(255, 255, 255, 0.411);
+  color: black;
+  align-self: flex-end; /* Moves it to the right */
+  float: right;
+  border-bottom-right-radius: 0;
+  margin: 10px 0;
+  clear: both; /* Ensures it doesn't overlap */
+}
+
+/* Bot message on the left */
+.bot-message {
+  background-color: var(--tableblue);
+  color: white;
+  align-self: flex-start;
+}
+
+/* Loader styling */
+.dot-loader-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: 10px;
+  margin-top: 5px; /* Adds spacing from the last user message */
+  padding: 5px;
+  clear: both; /* Prevents overlapping issues */
+}
+
+/* Dot animation */
+.dot-loader {
+  width: 8px;
+  height: 8px;
+  margin: 0 3px;
+  background-color: #555;
+  border-radius: 50%;
+  animation: dot-flash 1.4s infinite ease-in-out;
+}
+
+.dot-loader:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot-loader:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dot-flash {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+.table {
+  min-width: 90%;
+  margin: 20px 0;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  padding-bottom: 20px;
+  p {
+    padding-top: 20px;
+    padding-right: 10px;
+    text-align: end;
+  }
+}
+.hide {
+  display: none;
+}
