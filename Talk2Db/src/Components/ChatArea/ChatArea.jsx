@@ -31,6 +31,8 @@ const ChatArea = ({ sidebarOpen }) => {
   }, [id]);
 
   const handleSend = async () => {
+    console.log(value);
+    
     if (value.trim() !== "") {
       const newMessage = {
         id: new Date().getTime(),
@@ -38,6 +40,8 @@ const ChatArea = ({ sidebarOpen }) => {
         sender: "user",
       };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
+      
+      console.log(id);
 
       const body = {
         query: value,
@@ -79,7 +83,7 @@ const ChatArea = ({ sidebarOpen }) => {
         setMessages((prevMessages) => [...prevMessages, botMessage]);
 
         if (!id && queryResponse.conversation_id) {
-          navigate(`/${queryResponse.conversation_id}`);
+          navigate(`/home/${queryResponse.conversation_id}`);
         }
       } catch (error) {
         console.error("Error processing query:", error);

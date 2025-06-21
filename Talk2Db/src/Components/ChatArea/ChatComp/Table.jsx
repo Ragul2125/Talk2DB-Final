@@ -34,11 +34,14 @@ const Table = ({ query }) => {
 
   const handleExecute = async () => {
     setFetchingMore(true);
+    console.log(rowCount);
+    
     const dataResponse = await request("/execute_query", "POST", {
       query: query,
       row_count: rowCount,
     });
-
+    console.log(dataResponse);
+    
     if (dataResponse && Array.isArray(dataResponse.results)) {
       setHeaders(Object.keys(dataResponse.results[0]));
       setData(dataResponse.results);

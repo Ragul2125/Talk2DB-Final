@@ -216,7 +216,7 @@ AI: SHOW TABLES;
 MYSQL_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "root123",  # Replace with your password
+    "password": "root",  # Replace with your password
     "database": "talk2db",   # Replace with your DB
     "charset": "utf8mb4"
 }
@@ -490,6 +490,7 @@ def get_conversation1(conversation_id):
 def execute_query():
     sql_query = request.json.get("query")
     row = request.json.get("row_count")
+    print(sql_query)
     if not (sql_query.lower().startswith("select") or sql_query.lower().startswith("show") or sql_query.lower().startswith("with")):
         return jsonify({"error": "Only SELECT queries are allowed."}), 400
     response = execute_mysql_query(sql_query,row)  # Execute query
