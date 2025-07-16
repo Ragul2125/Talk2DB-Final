@@ -35,6 +35,16 @@
     width: 90%;
   }
 }
+.chat-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  p{
+    font-size: 30px;
+    color: #6e78ce;
+    cursor: pointer;
+  }
+}
 .chat-nav h1 {
   position: sticky;
   top: 0;

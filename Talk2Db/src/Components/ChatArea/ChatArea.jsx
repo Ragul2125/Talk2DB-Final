@@ -5,6 +5,8 @@ import Suggestions from "./ChatComp/Suggestion";
 import Messages from "./ChatComp/Messages";
 import useApiRequest from "../../Services/useApiRequest";
 import { useNavigate, useParams } from "react-router-dom";
+import { BsDatabaseFillAdd } from "react-icons/bs";
+import DatabasePopup from "../Pop/PopUp";
 const ChatArea = ({ sidebarOpen }) => {
   const { request, loading, error, data } = useApiRequest();
   const { request: reqM, loading: loadM, error: errM } = useApiRequest();
@@ -12,7 +14,7 @@ const ChatArea = ({ sidebarOpen }) => {
   const { id } = useParams();
   const [value, setValue] = useState("");
   const [messages, setMessages] = useState([]);
-
+  const [popup,setPopup] = useState(false);
   useEffect(() => {
     const fetchMessages = async () => {
       if (id) {
@@ -46,7 +48,9 @@ const ChatArea = ({ sidebarOpen }) => {
       const body = {
         query: value,
         conversation_id: id,
+        
       };
+      
       setValue("");
 
       try {
@@ -81,9 +85,10 @@ const ChatArea = ({ sidebarOpen }) => {
         }
 
         setMessages((prevMessages) => [...prevMessages, botMessage]);
-
+        console.log(queryResponse);
+        
         if (!id && queryResponse.conversation_id) {
-          navigate(`/home/${queryResponse.conversation_id}`);
+          navigate(`/${queryResponse.conversation_id}`);
         }
       } catch (error) {
         console.error("Error processing query:", error);
@@ -105,15 +110,19 @@ const ChatArea = ({ sidebarOpen }) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+  const handlepopup = ()=>{
+    set
+  }
   return (
     <div className={`ChatArea ${sidebarOpen ? "" : "sidebar-closed"}`}>
+      {popup ? <DatabasePopup setPopup={setPopup} /> : ""}
       <div className="chat-pg">
         <div className="center">
           <nav className="chat-nav">
             <h1>
               TALK2<span>DB</span>
             </h1>
+            <p onClick={()=>{setPopup(true)}}><BsDatabaseFillAdd/></p>
           </nav>
           {messages?.length > 0 ? (
             <Messages loading={loading} messages={messages} />
