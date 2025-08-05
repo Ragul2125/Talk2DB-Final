@@ -73,18 +73,19 @@ export default function Login() {
     setIsLoading(true);
 
     const url = isLogin
-      ? "http://localhost:5000/login"
-      : "http://localhost:5000/signup";
+      ? "http://localhost:8000/login"
+      : "http://localhost:8000/signup";
 
     const payload = {
       email: formData.email,
       password: formData.password,
       ...(isLogin ? {} : { name: formData.name }), // only send name in signup
     };
+    console.log("Submitting form with data:", payload);
 
     try {
       const res = await axios.post(url, payload);
-
+      console.log("Response from server:", res.data);
       toast.success(res.data.message);
 
       if (isLogin) {
@@ -284,7 +285,7 @@ export default function Login() {
               </div>
             ) : (
               <>
-                <span className="button-text">
+                <span className="button-text" >
                   {isLogin ? "Sign In" : "Create Account"}
                 </span>
                 <div className="button-ripple"></div>

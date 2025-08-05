@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Connect to MongoDB
-client = MongoClient("mongodb://localhost:27017/")  # or use your MongoDB Atlas URI
+client = MongoClient("mongodb+srv://ragul:r1a2g3u4l@cluster0.omv8aph.mongodb.net/")  # or use your MongoDB Atlas URI
 db = client["auth_db"]
 users_collection = db["users"]
 

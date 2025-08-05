@@ -62,7 +62,7 @@ const Table = ({ query }) => {
     }
 
     setShowChartOptions(false); // Close dropdown after selection
-
+    console.log ("Visualizing with chart type:", chartType);
     const visualize = await vreq("/generate_chart", "POST", {
       query: query,
       num_rows: `${rowCount}`,
