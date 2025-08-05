@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./Popup.css";
+import axios from "axios";
 export default function DatabasePopup({setPopup}) {
   const [formData, setFormData] = useState({
     user: "root",
@@ -11,11 +12,27 @@ export default function DatabasePopup({setPopup}) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitted credentials:", formData);
-    // TODO: replace with real connection logic.
-  };
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log("Submitted credentials:", formData);
+
+  try {
+    const response = await axios.post("http://localhost:8000/connectdb", formData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("✅ Connected:", response.data);
+    alert("Database connected successfully!");
+    setPopup(false); // close popup
+  } catch (error) {
+    console.error("❌ Connection failed:", error.response?.data || error.message);
+    alert("Failed to connect to database: " + (error.response?.data?.error || error.message));
+  }
+};
+
 
   return (
     <div className="popup-overlay">
