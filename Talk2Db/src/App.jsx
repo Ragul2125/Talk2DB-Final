@@ -6,18 +6,17 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
   return (
     <BrowserRouter>
-      {/* <Routes>
+      <Routes>
         <Route path="/" element={<Login/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/home" element={<Home />} />
         <Route path="/home/:id" element={<Home />} />
-      </Routes> */}
-      <Routes>
-        {/* <Route path="/popup" element={<Popup />} /> */}
-        <Route path="/" element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/:id" element={<Home />} />
       </Routes>
+      {/* <Routes>
+
+        <Route path="/home" element={<Home />} />
+        <Route path="/home/:id" element={<Home />} />
+      </Routes> */}
     </BrowserRouter>
   );
 }

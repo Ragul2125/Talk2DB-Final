@@ -20,6 +20,9 @@ from datetime import datetime, timedelta
 import google.generativeai as genai
 import regex as re
 import pymysql
+import certifi
+from pymongo import MongoClient
+from werkzeug.security import generate_password_hash, check_password_hash
 
 matplotlib.use('Agg')  # Prevents GUI errors
 
@@ -32,6 +35,78 @@ load_dotenv()
 genai.configure(api_key='AIzaSyDQvFBvNAdTV3fCv2QLV45T-2w-pRwVDwE')
 app = Flask(__name__)
 CORS(app)
+
+
+
+
+MONGO_URI = "mongodb+srv://04naveenk:qssJVqm1hPutgmBR@testing.867ct39.mongodb.net/"
+
+
+try:
+    client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
+    # Ping the server to check the connection
+    client.admin.command('ping')
+    print("✅ Database connected successfully")
+except Exception as e:
+    print("❌ Failed to connect to the database:", e)
+
+db = client["auth_db"]
+users_collection = db["users"]
+
+
+matplotlib.use('Agg')
+
+
+# === Mongo Signup ===
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.json
+    print(data)
+    name = data.get('name')
+    email = data.get('email')
+    password = data.get('password')
+
+    if not name or not email or not password:
+        return jsonify({'error': 'All fields are required'}), 400
+
+    if users_collection.find_one({"email": email}):
+        return jsonify({'error': 'User already exists'}), 400
+
+    hashed_password = generate_password_hash(password)
+    users_collection.insert_one({
+        "name": name,
+        "email": email,
+        "password": hashed_password
+    })
+
+    return jsonify({'message': 'User created successfully'}), 201
+
+
+
+# === Mongo Login ===
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+
+    user = users_collection.find_one({"email": email})
+    if not user or not check_password_hash(user['password'], password):
+        return jsonify({'error': 'Invalid email or password'}), 401
+
+    return jsonify({
+        'message': 'Login successful',
+        'user': {'name': user['name'], 'email': user['email']}
+    }), 200
+
+
+
+
+
+
+
+
+
 llm = genai.GenerativeModel(model_name="gemini-2.0-flash")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -216,7 +291,7 @@ AI: SHOW TABLES;
 MYSQL_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "root",  # Replace with your password
+    "password": "root123",  # Replace with your password
     "database": "talk2db",   # Replace with your DB
     "charset": "utf8mb4"
 }
@@ -442,7 +517,7 @@ def generate_sql():
             else:
                 gemini_messages.append(msg["content"])
 
-        model = genai.GenerativeModel("gemini-2.5-flash-preview-04-17")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         gen_config=genai.GenerationConfig( temperature=0.25)  # Set your desired temperature value (e.g., 0.0 to 1.0)
         response = model.generate_content(gemini_messages,generation_config=gen_config)
         #look at the generated response to debug
@@ -551,73 +626,182 @@ def get_conversation(id):
 
 
 
+# @app.route("/generate_chart", methods=["POST"])
+# def generate_chart():
+#     """ Handle chart generation request with error handling """
+#     try:
+#         # Parse JSON input safely
+#         data = request.get_json(force=True, silent=True)
+#         if not data:
+#             return jsonify({"error": "Invalid or missing JSON payload"}), 400
+
+#         chart_type = data.get("chart_type", "bar")
+#         num_rows = data.get("num_rows", "All")
+#         query1 = data.get("query")
+#         table=execute_mysql_query(query1)
+        
+#         if not isinstance(table["results"], list) or len(table) == 0:
+#             return jsonify({"error": "Table data is missing or not in correct format"}), 400
+
+#         print(f"Received data: {data}, num_rows type: {type(num_rows)}")
+
+#         # Convert table data to DataFrame
+#         df = pd.DataFrame(table["results"])
+#         print(df)
+#         row_count = len(df)
+
+#         # Validate row count for certain chart types
+#         if isinstance(num_rows, str) and num_rows.lower() == "all":
+#             if row_count > 50 and chart_type in ["Histogram", "Bar Chart", "Line Chart", "Pie Chart"]:
+#                 return jsonify({"warning": f"{chart_type} cannot display more than 50 rows. Your dataset has {row_count} rows."}), 200
+
+#         # Generate the prompt for AI-based chart generation
+#         ques = f"Create a {chart_type} using {'all rows' if num_rows.lower() == 'all' else f'the {num_rows} rows'} of the dataset, analyse the data and put a chart which completes the colour scheme Hexcode:200695, if more colors are needed to better visualize choose colors that compliment the provided hexcode. When mapping labels make sure that the chart produced is meaningful and easy to understand."       
+#         print(ques)
+#         # AI-Based Smart DataFrame Processing
+#         df = SmartDataframe(df, config={"llm": llm})
+
+#         try:
+#             result = df.chat(ques)
+#         except Exception as ai_error:
+#             return jsonify({"error": f"AI processing failed: {str(ai_error)}"}), 500
+
+#         encoded_image = None
+
+#         if isinstance(result, str):
+#             if os.path.isfile(result):  # Check if result is a valid file path
+#                 print(result)
+#                 with open(result, "rb") as image_file:
+#                     encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+#         elif isinstance(result, plt.Figure):
+#             buf = io.BytesIO()
+#             result.savefig(buf, format="png")
+#             buf.seek(0)
+#             encoded_image = base64.b64encode(buf.getvalue()).decode("utf-8")
+
+#         if not encoded_image:
+#             return jsonify({"error": "Unsupported response type."}), 500
+
+#         return jsonify({"status": "success", "image": encoded_image})
+
+#     except Exception as e:
+#         return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+import webbrowser
+import traceback
+import random
+
+class SmartDataframe:
+    def __init__(self, df, config=None):
+        self.df = df
+
+    def chat(self, prompt, chart_type):
+        print("🧠 Prompt to SmartDataframe:", prompt)
+
+        x_col = self.df.columns[0]
+        y_col = self.df.columns[1]
+        self.df[x_col] = self.df[x_col].astype(str)
+
+        fig, ax = plt.subplots()
+        chart_type = chart_type.strip().lower()
+
+        if chart_type in ["barchart", "bar"]:
+            self.df.plot(kind="bar", x=x_col, y=y_col, ax=ax, color="#200695")
+
+        elif chart_type in ["linechart", "line"]:
+            self.df.plot(kind="line", x=x_col, y=y_col, ax=ax, color="#200695", marker='o')
+
+        elif chart_type in ["scatterchart", "scatter"]:
+            self.df[x_col] = self.df[x_col].astype(float)  # for scatter, x must be numeric
+            self.df.plot(kind="scatter", x=x_col, y=y_col, ax=ax, color="#200695")
+
+        elif chart_type in ["piechart", "pie"]:
+            # Generate random hex colors
+            def random_color():
+                return "#" + ''.join(random.choices("0123456789ABCDEF", k=6))
+
+            colors = [random_color() for _ in range(len(self.df))]
+
+            fig, ax = plt.subplots()
+            self.df.set_index(x_col)[y_col].plot.pie(
+                ax=ax, autopct='%1.1f%%', startangle=90, colors=colors
+            )
+            ax.set_ylabel("")  # Hide y-axis label
+            ax.set_title(f"{y_col} distribution by {x_col}")
+
+        else:
+            raise ValueError(f"Unsupported chart type: {chart_type}")
+
+        return fig
+
 @app.route("/generate_chart", methods=["POST"])
 def generate_chart():
-    """ Handle chart generation request with error handling """
     try:
-        # Parse JSON input safely
         data = request.get_json(force=True, silent=True)
+        print(data)
         if not data:
             return jsonify({"error": "Invalid or missing JSON payload"}), 400
 
-        chart_type = data.get("chart_type", "bar")
+        chart_type = data.get("chart_type", "")
         num_rows = data.get("num_rows", "All")
         query1 = data.get("query")
-        table=execute_mysql_query(query1)
-        
-        if not isinstance(table["results"], list) or len(table) == 0:
+
+        table = execute_mysql_query(query1)
+        if not isinstance(table["results"], list) or len(table["results"]) == 0:
             return jsonify({"error": "Table data is missing or not in correct format"}), 400
 
-        print(f"Received data: {data}, num_rows type: {type(num_rows)}")
-
-        # Convert table data to DataFrame
         df = pd.DataFrame(table["results"])
-        print(df)
-        row_count = len(df)
+        print(f"\n📊 Received DataFrame:\n{df}")
+        print(f"num_rows type: {type(num_rows)}")
 
-        # Validate row count for certain chart types
         if isinstance(num_rows, str) and num_rows.lower() == "all":
-            if row_count > 50 and chart_type in ["Histogram", "Bar Chart", "Line Chart", "Pie Chart"]:
-                return jsonify({"warning": f"{chart_type} cannot display more than 50 rows. Your dataset has {row_count} rows."}), 200
+            if len(df) > 50 and chart_type.lower() in ["bar chart", "histogram", "line chart", "pie chart"]:
+                return jsonify({"warning": f"{chart_type} cannot display more than 50 rows. Your dataset has {len(df)} rows."}), 200
 
-        # Generate the prompt for AI-based chart generation
-        ques = f"Create a {chart_type} using {'all rows' if num_rows.lower() == 'all' else f'the {num_rows} rows'} of the dataset, analyse the data and put a chart which completes the colour scheme Hexcode:200695, if more colors are needed to better visualize choose colors that compliment the provided hexcode. When mapping labels make sure that the chart produced is meaningful and easy to understand."       
-        print(ques)
-        # AI-Based Smart DataFrame Processing
-        df = SmartDataframe(df, config={"llm": llm})
+        prompt = (
+            f"Create a {chart_type} using {'all rows' if num_rows.lower() == 'all' else f'the {num_rows} rows'} of the dataset. "
+            "Use Hexcode: #200695 for the color. Make it visually clear and labeled."
+        )
 
+        smart_df = SmartDataframe(df)
         try:
-            result = df.chat(ques)
-        except Exception as ai_error:
-            return jsonify({"error": f"AI processing failed: {str(ai_error)}"}), 500
+            result = smart_df.chat(prompt,chart_type)
+        except Exception:
+            print("🔥 chart  failed!")
+            print(traceback.format_exc())
+            return jsonify({"error": "chat generation failed"}), 500
+
+        # Save the chart image
+        chart_dir = "static/charts"
+        os.makedirs(chart_dir, exist_ok=True)
+        filename = f"chart_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        file_path = os.path.join(chart_dir, filename)
 
         encoded_image = None
+        if isinstance(result, plt.Figure):
+            result.savefig(file_path)
+            result.clf()
 
-        if isinstance(result, str):
-            if os.path.isfile(result):  # Check if result is a valid file path
-                print(result)
-                with open(result, "rb") as image_file:
-                    encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
-        elif isinstance(result, plt.Figure):
-            buf = io.BytesIO()
-            result.savefig(buf, format="png")
-            buf.seek(0)
-            encoded_image = base64.b64encode(buf.getvalue()).decode("utf-8")
+            # Open the image file locally (optional)
+            webbrowser.open(f"file://{os.path.abspath(file_path)}")
+
+            # Convert to base64 for API response
+            with open(file_path, "rb") as image_file:
+                encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
         if not encoded_image:
-            return jsonify({"error": "Unsupported response type."}), 500
+            return jsonify({"error": "Chart was not generated properly."}), 500
 
-        return jsonify({"status": "success", "image": encoded_image})
+        return jsonify({
+            "status": "success",
+            "image": encoded_image,
+            "image_url": f"/static/charts/{filename}"
+        })
 
     except Exception as e:
+        print("🔥 Server Error:")
+        print(traceback.format_exc())
         return jsonify({"error": f"Server error: {str(e)}"}), 500
-
-
-
-
-
-
-
 
 
 
@@ -663,4 +847,4 @@ def clear_conversation():
 
 if __name__ == "__main__":
     init_db()
-    app.run(debug=False, host="0.0.0.0", port=5000)
+    app.run(debug=False, host="0.0.0.0", port=8000)
