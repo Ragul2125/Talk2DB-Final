@@ -33,7 +33,7 @@ const SideNav = ({ isOpen, setIsOpen }) => {
             </div>
             <div
               onClick={() => {
-                navigate("/");
+                navigate("/home");
               }}
               className="new-chat"
             >

@@ -136,12 +136,6 @@ def connectdb():
 
 
 
-
-
-
-
-
-
 llm = genai.GenerativeModel(model_name="gemini-2.0-flash")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 

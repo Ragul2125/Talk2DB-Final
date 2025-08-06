@@ -28,7 +28,7 @@ const History = () => {
                   <div
                     className={"row " + (items.id == id ? "active" : "")}
                     onClick={() => {
-                      navigate(`/${items.id}`);
+                      navigate(`/home/${items.id}`);
                     }}
                     key={idx}
                   >
