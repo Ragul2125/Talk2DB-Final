@@ -33,7 +33,7 @@ const SideNav = ({ isOpen, setIsOpen }) => {
             </div>
             <div
               onClick={() => {
-                navigate("/");
+                navigate("/home");
               }}
               className="new-chat"
             >
@@ -51,7 +51,7 @@ const SideNav = ({ isOpen, setIsOpen }) => {
             <img src={profileImg} alt="Profile" />
           </div>
           <div className="user-name">
-            <p>Adela Parkson</p>
+            <p>Ragul</p>
           </div>
           <div className="logout-btn">
             <LuLogOut />

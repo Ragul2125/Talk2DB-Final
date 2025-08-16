@@ -26,13 +26,27 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 matplotlib.use('Agg')  # Prevents GUI errors
 
+# MYSQL_CONFIG = {
+#     "host": "localhost",
+#     "user": "root",
+#     "password": "root123",  # Replace with your password
+#     "database": "talk2db",   # Replace with your DB
+#     "charset": "utf8mb4"
+#     }
+MYSQL_CONFIG = {
+    "host": None,
+    "user": None,
+    "password": None,  # Replace with your password
+    "database": None,   # Replace with your DB
+    "charset": "utf8mb4"
+    }
 
 
 # Load environment variables
 load_dotenv()
 genai.configure(api_key='AIzaSyDQvFBvNAdTV3fCv2QLV45T-2w-pRwVDwE')
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 
 
@@ -96,9 +110,26 @@ def login():
     }), 200
 
 
+@app.route('/connectdb', methods=['POST'])
+def connectdb():
+    data = request.json
+    user = data.get('user')
+    password = data.get('password')
+    database = data.get('database')
+    
 
+    global MYSQL_CONFIG
+    MYSQL_CONFIG = {
+    "host": "localhost",
+    "user": user,
+    "password": password,  # Replace with your password
+    "database": database,   # Replace with your DB
+    "charset": "utf8mb4"
+    }
 
-
+    
+    print(MYSQL_CONFIG)
+    return MYSQL_CONFIG
 
 
 
@@ -284,13 +315,13 @@ AI: SHOW TABLES;
 # }
 
 # === MySQL Config ===
-MYSQL_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "root123",  # Replace with your password
-    "database": "talk2db",   # Replace with your DB
-    "charset": "utf8mb4"
-}
+# MYSQL_CONFIG = {
+#     "host": "localhost",
+#     "user": "root",
+#     "password": "root123",  # Replace with your password
+#     "database": "talk2db",   # Replace with your DB
+#     "charset": "utf8mb4"
+# }
 
 
 def init_db():

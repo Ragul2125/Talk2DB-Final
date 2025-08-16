@@ -15,6 +15,8 @@ const ChatArea = ({ sidebarOpen }) => {
   const [value, setValue] = useState("");
   const [messages, setMessages] = useState([]);
   const [popup,setPopup] = useState(false);
+
+  console.log("ID:", id);
   useEffect(() => {
     const fetchMessages = async () => {
       if (id) {
@@ -88,7 +90,7 @@ const ChatArea = ({ sidebarOpen }) => {
         console.log(queryResponse);
         
         if (!id && queryResponse.conversation_id) {
-          navigate(`/${queryResponse.conversation_id}`);
+          navigate(`/home/${queryResponse.conversation_id}`);
         }
       } catch (error) {
         console.error("Error processing query:", error);
