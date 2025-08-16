@@ -28,8 +28,6 @@ matplotlib.use('Agg')  # Prevents GUI errors
 
 
 
-
-
 # Load environment variables
 load_dotenv()
 genai.configure(api_key='AIzaSyDQvFBvNAdTV3fCv2QLV45T-2w-pRwVDwE')
@@ -38,9 +36,7 @@ CORS(app)
 
 
 
-
 MONGO_URI = "mongodb+srv://04naveenk:qssJVqm1hPutgmBR@testing.867ct39.mongodb.net/"
-
 
 try:
     client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())

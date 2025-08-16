@@ -27,7 +27,7 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 MONGO_URI = "mongodb+srv://04naveenk:qssJVqm1hPutgmBR@testing.867ct39.mongodb.net/"
 
